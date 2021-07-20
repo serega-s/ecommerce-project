@@ -43,6 +43,11 @@ const routes = [
     name: "Product",
     component: Product,
   },
+  // {
+  //   path: "/:category_slug/:product_slug",
+  //   name: "Product",
+  //   component: Product,
+  // },
   {
     path: "/cart",
     name: "Cart",

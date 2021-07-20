@@ -73,9 +73,7 @@
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                 <li>
-                  <router-link
-                    :to="{ name: 'Profile' }"
-                    class="dropdown-item"
+                  <router-link :to="{ name: 'Profile' }" class="dropdown-item"
                     >Profile</router-link
                   >
                 </li>
@@ -93,7 +91,9 @@
                 @click="activateClass(2)"
                 class="nav-link uppercase"
                 href="#"
-                >Login</router-link
+              >
+                <i class="bi bi-box-arrow-in-right"></i>
+                Login</router-link
               >
             </li>
           </template>

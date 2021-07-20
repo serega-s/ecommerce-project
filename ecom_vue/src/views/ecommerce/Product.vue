@@ -18,7 +18,7 @@
                 <div class="rating">
                   <Rating :rating="Math.round(product.get_avg_rating)" />
                   &nbsp;
-                  <span>{{ product.reviews.length || 'No' }} reviews</span>
+                  <span>{{ product.reviews.length || "No" }} reviews</span>
                 </div>
               </div>
               <div class="list-group-item">Price: ${{ product.price }}</div>
@@ -84,6 +84,7 @@
             <h4 class="uppercase">Reviews ({{ product.reviews.length }})</h4>
 
             <div class="list-group list-group-flush">
+              <template v-if="$store.state.isAuthenticated">
               <div class="list-group-item">
                 <div class="list-group-item">
                   <h4 class="uppercase">Leave a review</h4>
@@ -113,6 +114,10 @@
                   </button>
                 </div>
               </div>
+              </template>
+              <template v-else>
+                <div class="alert alert-primary">You must <router-link class="underline" :to="{name: 'Login'}">log in</router-link>&nbsp;to leave a review!</div>
+              </template>
               <div
                 class="list-group-item"
                 v-for="review in product.reviews"
@@ -186,6 +191,7 @@ export default {
           })
           .catch((error) => {
             console.log(error.response)
+            console.log(error.response.status)
           })
       }
       this.$store.commit("setIsLoading", false)
