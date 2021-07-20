@@ -62,12 +62,8 @@
 </template>
 
 <script>
-import NavMenu from "../../components/NavMenu.vue"
 export default {
   name: "Payment",
-  components: {
-    NavMenu,
-  },
   data() {
     return {
       paymentActive: true,

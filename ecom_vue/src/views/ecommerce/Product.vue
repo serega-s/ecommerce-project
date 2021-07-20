@@ -142,12 +142,11 @@
 
 <script>
 import axios from "axios"
-import VueToast from "@/components/Toast.vue"
+
 import Rating from "@/components/Rating.vue"
 export default {
   name: "Product",
   components: {
-    VueToast,
     Rating,
   },
   data() {
