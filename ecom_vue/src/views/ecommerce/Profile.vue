@@ -99,7 +99,7 @@
               <tr v-for="order,i in orders" :key="order.id">
                 <td><b>#</b>{{ i + 1 }}</td>
                 <td>{{ order.created_at }}</td>
-                <td>{{ order.total_price }}</td>
+                <td>${{ order.total_price }}</td>
                 <td><span v-if="order.is_paid ===  false">Not Paid</span><span v-else>Paid</span></td>
                 <td><span v-if="order.is_delivered ===  false">Not Delivered</span><span v-else>Delivered</span></td>
                 <td><router-link :to="{name: 'Order', params: {id: order.id}}" class="btn btn-dark">Details</router-link></td>

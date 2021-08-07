@@ -7,54 +7,65 @@
           <div class="list-group list-group-flush">
             <div class="list-group-item">
               <h2>Shipping</h2>
-              <p><strong>Name: </strong> sergei</p>
               <p>
-                <strong>Email: </strong
-                ><a href="mailto:sergei@sergei.com">sergei@sergei.com</a>
+                <strong>Name: {{ order.user.full_name }}</strong>
               </p>
-              <p><strong>Shipping: </strong>12d, 2d 3563553112e, Россия</p>
+              <p>
+                <strong>Email: </strong><a href="">{{ order.user.username }}</a>
+              </p>
+              <p>
+                <strong>Shipping: </strong>{{ order.shipping.country }},
+                {{ order.shipping.address }}, {{ order.shipping.postal_code }},
+                {{ order.shipping.phone }},
+              </p>
               <div role="alert" class="fade alert alert-warning show">
                 Not Delivered
               </div>
             </div>
             <div class="list-group-item">
               <h2>Payment Method</h2>
-              <p><strong>Method: </strong>PayPal</p>
-              <div role="alert" class="fade alert alert-warning show">
+              <p><strong>Method: </strong>Credit Card</p>
+              <div
+                role="alert"
+                class="fade alert alert-success show"
+                v-if="order.is_paid"
+              >
+                Paid
+              </div>
+              <div role="alert" class="fade alert alert-warning show" v-else>
                 Not Paid
               </div>
             </div>
             <div class="list-group-item">
               <h2>Order Items</h2>
               <div class="list-group list-group-flush">
-                <div class="list-group-item">
+                <div
+                  class="list-group-item"
+                  v-for="item in order.orderitems"
+                  :key="item.id"
+                >
                   <div class="row">
                     <div class="col-md-1">
                       <img
-                        src="/images/mouse_E2IrCGI.jpg"
-                        alt="Logitech G-Series Gaming Mouse"
+                        :src="item.product.get_image"
                         class="img-fluid rounded"
                       />
                     </div>
                     <div class="col">
-                      <a href="#/product/5">Logitech G-Series Gaming Mouse</a>
+                      <router-link
+                        class="underline"
+                        :to="{
+                          name: 'Product',
+                          params: { id: item.product.id },
+                        }"
+                        >{{ item.product.name }}</router-link
+                      >
                     </div>
-                    <div class="col-md-4">1 X $49.99 = $49.99</div>
-                  </div>
-                </div>
-                <div class="list-group-item">
-                  <div class="row">
-                    <div class="col-md-1">
-                      <img
-                        src="/images/camera_LfFS0wx.jpg"
-                        alt="Cannon EOS 80D DSLR Camera"
-                        class="img-fluid rounded"
-                      />
+                    <div class="col-md-4">
+                      {{ item.quantity }} X {{ item.product.price }} = ${{
+                        getItemTotal(item).toFixed(2)
+                      }}
                     </div>
-                    <div class="col">
-                      <a href="#/product/4">Cannon EOS 80D DSLR Camera</a>
-                    </div>
-                    <div class="col-md-4">1 X $929.29 = $929.29</div>
                   </div>
                 </div>
               </div>
@@ -64,39 +75,50 @@
         <div class="col-md-4">
           <div class="card">
             <div class="list-group list-group-flush">
-              <div class="list-group-item uppercase"><h2>Order Summary</h2></div>
+              <div class="list-group-item uppercase">
+                <h2>Order Summary</h2>
+              </div>
               <div class="list-group-item">
                 <div class="row">
                   <div class="col">Items:</div>
-                  <div class="col">$979.28</div>
+                  <div class="col">some pcs</div>
                 </div>
               </div>
               <div class="list-group-item">
                 <div class="row">
                   <div class="col">Shipping:</div>
-                  <div class="col">$0.00</div>
-                </div>
-              </div>
-              <div class="list-group-item">
-                <div class="row">
-                  <div class="col">Tax:</div>
-                  <div class="col">$80.30</div>
+                  <div
+                    class="col"
+                    v-if="cartTotalPrice < 100 && cartTotalLength < 2"
+                  >
+                    $5.00
+                  </div>
+                  <div class="col" v-else>$0.00</div>
                 </div>
               </div>
               <div class="list-group-item">
                 <div class="row">
                   <div class="col">Total:</div>
-                  <div class="col">$1059.58</div>
+                  <div class="col">${{ order.total_price }}</div>
                 </div>
               </div>
               <div class="list-group-item">
-                <div
-                  role="status"
-                  class="spinner-border"
-                  style="height: 100px; width: 100px; margin: auto; display: block;"
+                <button
+                  type="button"
+                  class="btn btn-dark"
+                  disabled
+                  v-if="order.is_paid"
                 >
-                  <span class="sr-only">Loading...</span>
-                </div>
+                  Paid Successfully
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-dark"
+                  @click="confirmOrder"
+                  v-else
+                >
+                  Order
+                </button>
               </div>
             </div>
           </div>
@@ -107,10 +129,57 @@
 </template>
 
 <script>
+import axios from "axios"
 export default {
   name: "Order",
+  mounted() {
+    document.title = "Order | Shop"
+
+    this.cart = this.$store.state.cart
+    this.getOrder()
+  },
   data() {
-    return {}
+    return {
+      order: {
+        user: {},
+        shipping: {},
+      },
+      paymentMethod: "Credit Card",
+
+      shipping_price: 0,
+    }
+  },
+  methods: {
+    getItemTotal(item) {
+      return item.quantity * item.product.price
+    },
+    async getOrder() {
+      this.$store.commit("setIsLoading", true)
+      const orderID = this.$route.params.id
+
+      await axios
+        .get(`/api/v1/order/${orderID}/`)
+        .then((response) => {
+          console.log(response.data)
+          this.order = response.data
+        })
+        .catch((error) => {
+          console.log(error.response)
+        })
+      this.$store.commit("setIsLoading", false)
+    },
+    async confirmOrder() {
+      this.$store.commit("setIsLoading", true)
+      const orderID = this.$route.params.id
+
+      await axios
+        .post(`/api/v1/order/confirm-order/${orderID}/`)
+        .then((response) => {
+          console.log(response.data)
+          this.getOrder()
+        })
+      this.$store.commit("setIsLoading", false)
+    },
   },
 }
 </script>

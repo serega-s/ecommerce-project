@@ -1,16 +1,21 @@
+import uuid
+
 from django.contrib.auth.models import User
 from django.db import models
 
 
 class Product(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='products')
+    # id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='products')
     name = models.CharField(max_length=255)
     brand = models.CharField(max_length=255)
     price = models.DecimalField(max_digits=7, decimal_places=2)
     description = models.TextField(blank=True, null=True)
     countInStock = models.IntegerField(blank=True, null=True, default=1)
     created_at = models.DateTimeField(auto_now_add=True)
-    image = models.ImageField(upload_to="uploads/", default="placeholder.png", blank=True, null=True)
+    image = models.ImageField(upload_to="uploads/",
+                              default="placeholder.png", blank=True, null=True)
 
     def get_image(self):
         if self.image:
@@ -32,9 +37,13 @@ class Product(models.Model):
         except ZeroDivisionError:
             return 0
 
+
 class Review(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
+    # id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name='reviews')
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, blank=True, null=True)
     rating = models.DecimalField(max_digits=7, decimal_places=2)
     comment = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -44,6 +53,7 @@ class Review(models.Model):
 
 
 class Order(models.Model):
+    # id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     paymentMethod = models.CharField(max_length=200, null=True, blank=True)
     shipping_price = models.DecimalField(
@@ -60,9 +70,13 @@ class Order(models.Model):
     def __str__(self):
         return str(self.created_at)
 
+
 class OrderItem(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    # id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name='orderitems')
+    order = models.ForeignKey(
+        Order, on_delete=models.CASCADE, related_name='orderitems')
     price = models.DecimalField(max_digits=6, decimal_places=2)
     name = models.CharField(max_length=255)
     image = models.CharField(max_length=255)
@@ -71,9 +85,11 @@ class OrderItem(models.Model):
     def __str__(self):
         return str(self.id)
 
+
 class ShippingAddress(models.Model):
+    # id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     order = models.OneToOneField(
-        Order, on_delete=models.CASCADE, null=True, blank=True)
+        Order, on_delete=models.CASCADE, null=True, blank=True, related_name='shipping')
     phone = models.CharField(max_length=255)
     address = models.CharField(max_length=200, null=True, blank=True)
     city = models.CharField(max_length=200, null=True, blank=True)

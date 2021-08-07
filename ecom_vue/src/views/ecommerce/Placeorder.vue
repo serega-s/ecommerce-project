@@ -38,12 +38,13 @@
                 <strong>Shipping: </strong
                 >{{ $store.state.shippingInfo.country }},
                 {{ $store.state.shippingInfo.address }},
-                {{ $store.state.shippingInfo.postalcode }}
+                {{ $store.state.shippingInfo.postalcode }},
+                {{ $store.state.shippingInfo.phone }}
               </p>
             </div>
             <div class="list-group-item">
               <h2>Payment Method</h2>
-              <p><strong>Method: </strong>PayPal</p>
+              <p><strong>Method: </strong>{{ paymentMethod }}</p>
             </div>
             <div class="list-group-item">
               <h2>Order Items</h2>
@@ -84,7 +85,9 @@
         <div class="col-md-4">
           <div class="card">
             <div class="list-group list-group-flush">
-              <div class="list-group-item uppercase"><h2>Order Summary</h2></div>
+              <div class="list-group-item uppercase">
+                <h2>Order Summary</h2>
+              </div>
               <div class="list-group-item">
                 <div class="row">
                   <div class="col">Items:</div>
@@ -184,9 +187,18 @@ export default {
         .then((response) => {
           console.log(response.data)
           this.$store.commit("clearCart")
-          this.$router.push("/")
+          // this.$router.push({name: 'Order', params: {id: params.id}})
 
           console.log("SHIPPING_PRICE:", this.shipping_price)
+        })
+        .catch((error) => {
+          console.log(error.response)
+        })
+
+      await axios
+        .get("/api/v1/last-order/")
+        .then((response) => {
+          this.$router.push({ name: "Order", params: { id: response.data.id } })
         })
         .catch((error) => {
           console.log(error.response)

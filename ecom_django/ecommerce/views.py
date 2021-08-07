@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models.query_utils import Q
 from django.shortcuts import get_object_or_404
@@ -7,13 +8,13 @@ from rest_framework.decorators import (api_view, authentication_classes,
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from ecommerce.models import Order, OrderItem, Product, Review, ShippingAddress
+from .models import Order, OrderItem, Product, Review, ShippingAddress
 
 from .serializers import OrderSerializer, ProductSerializer
 
 
 @api_view(['GET'])
-@permission_classes([AllowAny,])
+@permission_classes([AllowAny, ])
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
 
@@ -27,16 +28,17 @@ def product_detail(request, product_id):
 @permission_classes([permissions.IsAuthenticated])
 def add_comment(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    
+
     Review.objects.create(
-        user=request.user, 
-        product=product, 
+        user=request.user,
+        product=product,
         rating=request.data['rating'],
         comment=request.data['comment']
     )
     serializer = ProductSerializer(product)
 
     return Response(serializer.data)
+
 
 @api_view(['GET', 'POST'])
 @permission_classes([AllowAny])
@@ -45,7 +47,8 @@ def products_list(request):
     if query == None:
         query = ''
 
-    products = Product.objects.filter(Q(name__icontains=query) | Q(description__icontains=query)).order_by('-created_at')
+    products = Product.objects.filter(Q(name__icontains=query) | Q(
+        description__icontains=query)).order_by('-created_at')
 
     page = request.query_params.get('page')
     paginator = Paginator(products, 2)
@@ -84,12 +87,13 @@ def add_order_items(request):
             shipping_price=data['shipping_price'],
             total_price=data['total_price']
         )
-        
+
         print('SHIPPING PRICE:', data['shipping_price'])
 
         shipping = ShippingAddress.objects.create(
             order=order,
             address=data['address'],
+            phone=data['phone'],
             city=data['city'],
             postal_code=data['postal_code'],
             country=data['country']
@@ -112,8 +116,23 @@ def add_order_items(request):
             product.save()
 
         serializer = OrderSerializer(order, many=False)
-        
-        return Response({'data': 'Order Confirmed'}, status=200)
+
+        return Response({'data': 'Order Processed'}, status=200)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def confirm_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+
+    order.is_paid = True
+    order.is_delivered = True
+
+    order.paidAt = datetime.now()
+    order.save()
+
+    return Response('Order Confirmed')
+
 
 
 @api_view(['GET'])
@@ -122,4 +141,23 @@ def get_my_orders(request):
     orders = Order.objects.filter(user=request.user)
     serializer = OrderSerializer(orders, many=True)
 
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+
+    serializer = OrderSerializer(order)
+
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_last_order(request):
+    order = Order.objects.filter(user=request.user).last()
+
+    serializer = OrderSerializer(order)
     return Response(serializer.data)

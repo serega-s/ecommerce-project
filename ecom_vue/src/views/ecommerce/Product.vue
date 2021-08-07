@@ -124,7 +124,7 @@
                 :key="review.id"
               >
                 <strong>
-                  {{ review.user.first_name }} {{ review.user.last_name }}
+                  {{ review.user.full_name }}
                 </strong>
                 <div class="rating">
                   <Rating :rating="review.rating" />

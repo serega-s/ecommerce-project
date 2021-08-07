@@ -11,59 +11,59 @@ class UserCreateSerializer(UserCreateSerializer):
     class Meta(UserCreateSerializer.Meta):
         model = User
         fields = (
-            'id', 
-            'username', 
-            'password', 
-            'first_name', 
-            'last_name', 
+            'id',
+            'username',
+            'password',
+            'first_name',
+            'last_name',
             'email'
         )
 
 
 class UserSerializer(serializers.ModelSerializer):
+    full_name = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
-        fields = (
-            'id', 
-            'username', 
-            'first_name', 
-            'last_name', 
-            'email'
-        )
+        fields = [
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'email',
+            'full_name',
+        ]
+
+    def get_full_name(self, obj):
+        full_name = f'{obj.first_name} {obj.last_name}'
+
+        return full_name
 
 
 class ReviewSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
+
     class Meta:
         model = Review
-        fields = (
-            'id',
-            'product', 
-            'user', 
-            'rating', 
-            'comment', 
-            'created_at'
-        )
-
+        fields = '__all__'
 
 
 class ProductSerializer(serializers.ModelSerializer):
     reviews = ReviewSerializer(many=True)
+
     class Meta:
         model = Product
-        fields = (
-            'id', 
-            'name', 
-            'brand', 
+        fields = [
+            'id',
+            'name',
+            'brand',
             'get_avg_rating',
-            'price', 
-            'description', 
-            # 'rating', 
-            'countInStock', 
-            'get_image', 
+            'price',
+            'description',
+            'countInStock',
+            'get_image',
             'reviews'
-        )
+        ]
 
 
 class ShippingAddressSerializer(serializers.ModelSerializer):
@@ -73,23 +73,22 @@ class ShippingAddressSerializer(serializers.ModelSerializer):
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
+    product = ProductSerializer(read_only=True)
+
     class Meta:
         model = OrderItem
         fields = '__all__'
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    order_items = OrderItemSerializer(read_only=True)
-    shipping_address = ShippingAddressSerializer(read_only=True)
+    shipping = ShippingAddressSerializer(read_only=True)
+    orderitems = OrderItemSerializer(read_only=True, many=True)
     user = UserSerializer(read_only=True)
 
     class Meta:
         model = Order
         fields = (
             'user',
-            'order_items',
-            'shipping_address',
-
             'id',
             'paymentMethod',
             'shipping_price',
@@ -98,6 +97,7 @@ class OrderSerializer(serializers.ModelSerializer):
             'paid_at',
             'is_delivered',
             'delivered_at',
-            'created_at'
+            'created_at',
+            'orderitems',
+            'shipping',
         )
-    
