@@ -72,7 +72,7 @@
                 placeholder="Enter postal code"
                 type="text"
                 class="form-control"
-                v-model="postalcode"
+                v-model="postal_code"
               />
             </div>
             <div class="form-group">
@@ -103,7 +103,7 @@ export default {
     return {
       phone: "",
       address: "",
-      postalcode: "",
+      postal_code: "",
       city: "",
       country: "",
       errors: [],
@@ -121,7 +121,7 @@ export default {
     submitForm() {
       this.errors = []
       localStorage.removeItem("address")
-      localStorage.removeItem("postalcode")
+      localStorage.removeItem("postal_code")
       localStorage.removeItem("city")
       localStorage.removeItem("phone")
       localStorage.removeItem("country")
@@ -134,7 +134,7 @@ export default {
         this.errors.push("The address field is missing!")
       }
 
-      if (this.postalcode === "") {
+      if (this.postal_code === "") {
         this.errors.push("The postal code field is missing!")
       }
 
@@ -152,13 +152,13 @@ export default {
         this.$store.commit("setShipInfo", {
           address: this.address,
           phone: this.phone,
-          postalcode: this.postalcode,
+          postal_code: this.postal_code,
           city: this.city,
           country: this.country,
         })
 
         localStorage.setItem("address", this.address)
-        localStorage.setItem("postalcode", this.postalcode)
+        localStorage.setItem("postal_code", this.postal_code)
         localStorage.setItem("phone", this.phone)
         localStorage.setItem("city", this.city)
         localStorage.setItem("country", this.country)

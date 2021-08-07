@@ -158,7 +158,7 @@ export default {
       const orderID = this.$route.params.id
 
       await axios
-        .get(`/api/v1/order/${orderID}/`)
+        .get(`/api/v1/orders/${orderID}/`)
         .then((response) => {
           console.log(response.data)
           this.order = response.data
@@ -173,7 +173,7 @@ export default {
       const orderID = this.$route.params.id
 
       await axios
-        .post(`/api/v1/order/confirm-order/${orderID}/`)
+        .post(`/api/v1/orders/confirm-order/${orderID}/`)
         .then((response) => {
           console.log(response.data)
           this.getOrder()

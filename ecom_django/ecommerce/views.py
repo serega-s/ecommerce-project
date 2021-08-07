@@ -76,9 +76,9 @@ def add_order_items(request):
     user = request.user
     data = request.data
 
-    order_items = data['order_items']
+    orderitems = data['orderitems']
 
-    if order_items and len(order_items) == 0:
+    if orderitems and len(orderitems) == 0:
         return Response({'detail': 'No Order Items'}, status=400)
     else:
         order = Order.objects.create(
@@ -100,7 +100,7 @@ def add_order_items(request):
         )
 
         # for loop for every item in our order items
-        for i in order_items:
+        for i in orderitems:
             product = Product.objects.get(id=i['product'])
 
             item = OrderItem.objects.create(

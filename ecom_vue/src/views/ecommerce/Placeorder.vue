@@ -38,7 +38,7 @@
                 <strong>Shipping: </strong
                 >{{ $store.state.shippingInfo.country }},
                 {{ $store.state.shippingInfo.address }},
-                {{ $store.state.shippingInfo.postalcode }},
+                {{ $store.state.shippingInfo.postal_code }},
                 {{ $store.state.shippingInfo.phone }}
               </p>
             </div>
@@ -171,14 +171,14 @@ export default {
       }
 
       const formData = {
-        order_items: items,
+        orderitems: items,
         paymentMethod: this.paymentMethod,
         shipping_price: this.shipping_price,
         total_price: this.cartTotalPrice,
         address: this.$store.state.shippingInfo.address,
         phone: this.$store.state.shippingInfo.phone,
         city: this.$store.state.shippingInfo.city,
-        postal_code: this.$store.state.shippingInfo.postalcode,
+        postal_code: this.$store.state.shippingInfo.postal_code,
         country: this.$store.state.shippingInfo.country,
       }
 
@@ -187,16 +187,16 @@ export default {
         .then((response) => {
           console.log(response.data)
           this.$store.commit("clearCart")
-          // this.$router.push({name: 'Order', params: {id: params.id}})
 
           console.log("SHIPPING_PRICE:", this.shipping_price)
         })
         .catch((error) => {
           console.log(error.response)
+          this.$router.push({ name: "Cart" })
         })
 
       await axios
-        .get("/api/v1/last-order/")
+        .get("/api/v1/orders/last-order/")
         .then((response) => {
           this.$router.push({ name: "Order", params: { id: response.data.id } })
         })

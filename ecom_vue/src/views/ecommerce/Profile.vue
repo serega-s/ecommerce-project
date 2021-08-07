@@ -227,7 +227,7 @@ export default {
       this.$store.commit("setIsLoading", true)
 
       await axios
-        .get("/api/v1/my-orders/")
+        .get("/api/v1/orders/my-orders/")
         .then((response) => {
           this.orders = response.data
         })

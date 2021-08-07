@@ -13,7 +13,7 @@ export default createStore({
     shippingInfo: {
       address: "",
       phone: "",
-      postalcode: "",
+      postal_code: "",
       city: "",
       country: "",
     },

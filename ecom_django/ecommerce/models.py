@@ -53,6 +53,17 @@ class Review(models.Model):
 
 
 class Order(models.Model):
+    PROCESSING = 'Processing'
+    DELIVERING = 'Delivering'
+    DELIVERED = 'Delivered'
+    NOT_DELIVERED = 'Not Delivered'
+    DELIVERY_STATUS_CHOICES = (
+        (PROCESSING, 'processing'),
+        (DELIVERING, 'delivering'),
+        (DELIVERED, 'delivered'),
+        (NOT_DELIVERED, 'not_delivered'),
+    )
+
     # id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     paymentMethod = models.CharField(max_length=200, null=True, blank=True)
@@ -63,6 +74,7 @@ class Order(models.Model):
     is_paid = models.BooleanField(default=False)
     paid_at = models.DateTimeField(auto_now_add=False, null=True, blank=True)
     is_delivered = models.BooleanField(default=False)
+    # delivery_status = models.CharField(choices=DELIVERY_STATUS_CHOICES, max_length=50, default=PROCESSING)
     delivered_at = models.DateTimeField(
         auto_now_add=False, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
