@@ -76,7 +76,6 @@
 import ProductBox from "@/components/ProductBox.vue"
 
 import axios from "axios"
-// import Pagination from "../components/Pagination.vue"
 
 export default {
   name: "Home",

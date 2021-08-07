@@ -260,4 +260,7 @@ strong {
   background: #1a1a1a;
   border-radius: 0;
 }
+.card-img {
+  object-fit: cover;
+}
 </style>

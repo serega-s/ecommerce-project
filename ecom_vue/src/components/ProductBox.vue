@@ -1,5 +1,5 @@
 <template>
-  <div class="my-3 p-3 rounded card">
+  <div class="my-3 p-3 rounded card h-80" >
     <router-link :to="{ name: 'Product', params: { id: product.id } }"
       ><img class="card-img" :src="product.get_image"
     /></router-link>
