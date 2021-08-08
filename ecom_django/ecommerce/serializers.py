@@ -1,8 +1,6 @@
 from django.contrib.auth.models import User
-from django.db import models
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
-from rest_framework.relations import StringRelatedField
 
 from .models import Order, OrderItem, Product, Review, ShippingAddress
 

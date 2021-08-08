@@ -118,7 +118,7 @@ def add_order_items(request):
 
         current_order = user.orders.last()
 
-        serializer = OrderSerializer(current_order) 
+        serializer = OrderSerializer(current_order)
 
         return Response(serializer.data)
 
