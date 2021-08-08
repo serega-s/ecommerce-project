@@ -3,7 +3,7 @@ from datetime import datetime
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models.query_utils import Q
 from django.shortcuts import get_object_or_404
-from rest_framework import authentication, permissions, status
+from rest_framework import authentication, permissions
 from rest_framework.decorators import (api_view, authentication_classes,
                                        permission_classes)
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -14,7 +14,7 @@ from .serializers import OrderSerializer, ProductSerializer
 
 
 @api_view(['GET'])
-@permission_classes([AllowAny, ])
+@permission_classes([AllowAny])
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
 
@@ -71,6 +71,7 @@ def products_list(request):
 
 
 @api_view(['POST'])
+@authentication_classes([authentication.TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def add_order_items(request):
     user = request.user
@@ -117,11 +118,12 @@ def add_order_items(request):
 
         serializer = OrderSerializer(order, many=False)
 
-        return Response({'data': 'Order Processed'}, status=200)
+        return Response('Order Processed')
 
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
+@authentication_classes([authentication.TokenAuthentication])
 def confirm_order(request, order_id):
     order = get_object_or_404(Order, id=order_id)
 
@@ -145,6 +147,7 @@ def get_my_orders(request):
 
 
 @api_view(['GET'])
+@authentication_classes([authentication.TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_order(request, order_id):
     order = get_object_or_404(Order, id=order_id)
@@ -155,6 +158,7 @@ def get_order(request, order_id):
 
 
 @api_view(['GET'])
+@authentication_classes([authentication.TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def get_last_order(request):
     user = request.user
