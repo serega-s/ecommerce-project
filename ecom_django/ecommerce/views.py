@@ -1,4 +1,5 @@
 from datetime import datetime
+
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models.query_utils import Q
 from django.shortcuts import get_object_or_404
@@ -9,7 +10,6 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
 from .models import Order, OrderItem, Product, Review, ShippingAddress
-
 from .serializers import OrderSerializer, ProductSerializer
 
 
@@ -132,7 +132,6 @@ def confirm_order(request, order_id):
     order.save()
 
     return Response('Order Confirmed')
-
 
 
 @api_view(['GET'])
