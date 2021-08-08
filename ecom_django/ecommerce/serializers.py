@@ -4,7 +4,7 @@ from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
 from rest_framework.relations import StringRelatedField
 
-from ecommerce.models import Order, OrderItem, Product, Review, ShippingAddress
+from .models import Order, OrderItem, Product, Review, ShippingAddress
 
 
 class UserCreateSerializer(UserCreateSerializer):
@@ -58,6 +58,7 @@ class ProductSerializer(serializers.ModelSerializer):
             'name',
             'brand',
             'get_avg_rating',
+            'is_available',
             'price',
             'description',
             'countInStock',
@@ -88,16 +89,18 @@ class OrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = (
-            'user',
             'id',
+            'user',
             'paymentMethod',
             'shipping_price',
             'total_price',
             'is_paid',
             'paid_at',
-            'is_delivered',
+            'delivery_status',
             'delivered_at',
             'created_at',
             'orderitems',
             'shipping',
+            'get_price_total',
+            'get_items_total'
         )

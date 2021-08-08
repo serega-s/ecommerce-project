@@ -37,6 +37,12 @@ class Product(models.Model):
         except ZeroDivisionError:
             return 0
 
+    @property
+    def is_available(self):
+        if self.countInStock > 0:
+            return True
+        return False
+
 
 class Review(models.Model):
     # id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
@@ -65,7 +71,7 @@ class Order(models.Model):
     )
 
     # id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
     paymentMethod = models.CharField(max_length=200, null=True, blank=True)
     shipping_price = models.DecimalField(
         max_digits=7, decimal_places=2, null=True, blank=True)
@@ -73,14 +79,27 @@ class Order(models.Model):
         max_digits=7, decimal_places=2, null=True, blank=True)
     is_paid = models.BooleanField(default=False)
     paid_at = models.DateTimeField(auto_now_add=False, null=True, blank=True)
-    is_delivered = models.BooleanField(default=False)
-    # delivery_status = models.CharField(choices=DELIVERY_STATUS_CHOICES, max_length=50, default=PROCESSING)
+    delivery_status = models.CharField(choices=DELIVERY_STATUS_CHOICES, max_length=50, default=PROCESSING)
     delivered_at = models.DateTimeField(
         auto_now_add=False, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return str(self.created_at)
+        return str(self.user.username)
+
+    @property
+    def get_price_total(self):
+        orderitems = self.orderitems.all()
+        total = sum([item.get_total + self.shipping_price for item in orderitems])
+
+        return total
+
+    @property
+    def get_items_total(self):
+        orderitems = self.orderitems.all()
+        total = sum([item.quantity for item in orderitems])
+
+        return total
 
 
 class OrderItem(models.Model):
@@ -96,6 +115,11 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return str(self.id)
+
+    @property
+    def get_total(self):
+        total = self.product.price * self.quantity
+        return total
 
 
 class ShippingAddress(models.Model):

@@ -138,7 +138,8 @@ def confirm_order(request, order_id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_my_orders(request):
-    orders = Order.objects.filter(user=request.user)
+    user = request.user
+    orders = user.orders.all()
     serializer = OrderSerializer(orders, many=True)
 
     return Response(serializer.data)
@@ -157,7 +158,9 @@ def get_order(request, order_id):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_last_order(request):
-    order = Order.objects.filter(user=request.user).last()
+    user = request.user
+    order = user.orders.last()
 
     serializer = OrderSerializer(order)
+    print(serializer.data)
     return Response(serializer.data)
