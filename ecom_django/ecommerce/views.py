@@ -29,7 +29,7 @@ def product_detail(request, product_id):
 def add_comment(request, product_id):
     product = get_object_or_404(Product, id=product_id)
 
-    Review.objects.create(
+    review = Review.objects.create(
         user=request.user,
         product=product,
         rating=request.data['rating'],
@@ -116,9 +116,11 @@ def add_order_items(request):
             product.countInStock -= int(item.quantity)
             product.save()
 
-        serializer = OrderSerializer(order, many=False)
+        current_order = user.orders.last()
 
-        return Response('Order Processed')
+        serializer = OrderSerializer(current_order) 
+
+        return Response(serializer.data)
 
 
 @api_view(['POST'])
@@ -154,16 +156,4 @@ def get_order(request, order_id):
 
     serializer = OrderSerializer(order)
 
-    return Response(serializer.data)
-
-
-@api_view(['GET'])
-@authentication_classes([authentication.TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def get_last_order(request):
-    user = request.user
-    order = user.orders.last()
-
-    serializer = OrderSerializer(order)
-    print(serializer.data)
     return Response(serializer.data)

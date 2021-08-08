@@ -10,5 +10,4 @@ urlpatterns = [
     path('orders/my-orders/', views.get_my_orders),
     path('orders/<int:order_id>/', views.get_order),
     path('orders/confirm-order/<int:order_id>/', views.confirm_order),
-    path('orders/last-order/', views.get_last_order)
 ]
