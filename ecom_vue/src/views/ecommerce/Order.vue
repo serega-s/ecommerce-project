@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <!-- <button type="button" class="btn btn-outline-light my-3" onclick="javascript:history.go(-1)">Go Back</button> -->
     <div>
       <h1>Order:</h1>
       <div class="row">
@@ -18,13 +19,29 @@
                 {{ order.shipping.address }}, {{ order.shipping.postal_code }},
                 {{ order.shipping.phone }},
               </p>
-              <div role="alert" class="fade alert alert-warning show">
-                Not Delivered
+
+              <div
+                role="alert"
+                class="fade alert alert-success show"
+                v-if="order.delivery_status === 'Delivered'"
+              >
+                {{ order.delivery_status }}
+              </div>
+              <div
+                role="alert"
+                class="fade alert alert-info show"
+                v-else-if="order.delivery_status !== 'Not Delivered'"
+              >
+                {{ order.delivery_status }}
+              </div>
+              <div role="alert" class="fade alert alert-warning show" v-else>
+                {{ order.delivery_status }}
               </div>
             </div>
+
             <div class="list-group-item">
               <h2>Payment Method</h2>
-              <p><strong>Method: </strong>Credit Card</p>
+              <p><strong>Method: </strong>{{ order.payment_method }}</p>
               <div
                 role="alert"
                 class="fade alert alert-success show"
@@ -36,6 +53,7 @@
                 Not Paid
               </div>
             </div>
+
             <div class="list-group-item">
               <h2>Order Items</h2>
               <div class="list-group list-group-flush">
@@ -81,25 +99,19 @@
               <div class="list-group-item">
                 <div class="row">
                   <div class="col">Items:</div>
-                  <div class="col">some pcs</div>
+                  <div class="col">{{ order.get_items_total }} pcs</div>
                 </div>
               </div>
               <div class="list-group-item">
                 <div class="row">
                   <div class="col">Shipping:</div>
-                  <div
-                    class="col"
-                    v-if="cartTotalPrice < 100 && cartTotalLength < 2"
-                  >
-                    $5.00
-                  </div>
-                  <div class="col" v-else>$0.00</div>
+                  <div class="col">${{ order.shipping_price }}</div>
                 </div>
               </div>
               <div class="list-group-item">
                 <div class="row">
                   <div class="col">Total:</div>
-                  <div class="col">${{ order.total_price }}</div>
+                  <div class="col">${{ order.get_price_total }}</div>
                 </div>
               </div>
               <div class="list-group-item">
@@ -134,8 +146,6 @@ export default {
   name: "Order",
   mounted() {
     document.title = "Order | Shop"
-
-    this.cart = this.$store.state.cart
     this.getOrder()
   },
   data() {
@@ -144,9 +154,6 @@ export default {
         user: {},
         shipping: {},
       },
-      paymentMethod: "Credit Card",
-
-      shipping_price: 0,
     }
   },
   methods: {

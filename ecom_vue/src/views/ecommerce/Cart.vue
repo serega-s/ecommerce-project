@@ -46,18 +46,14 @@
 
 <script>
 import CartItem from "@/components/CartItem"
+import cartComputed from '@/mixins/cartComputed.vue'
 export default {
   name: "Cart",
   data() {
-    return {
-      cart: {
-        items: [],
-      },
-    }
+    return {}
   },
+  mixins: [cartComputed],
   mounted() {
-    this.cart = this.$store.state.cart
-
     document.title = `Cart (${this.cartTotalLength || 0}) | Shop)`
   },
   methods: {
@@ -67,19 +63,6 @@ export default {
       )
     },
   },
-  computed: {
-    cartTotalLength() {
-      return this.cart.items.reduce((acc, curVal) => {
-        return parseInt((acc += parseInt(curVal.quantity)))
-      }, 0)
-    },
-    cartTotalPrice() {
-      return this.cart.items.reduce((acc, curVal) => {
-        return parseFloat((acc += curVal.product.price * curVal.quantity))
-      }, 0)
-    },
-  },
-
   components: {
     CartItem,
   },

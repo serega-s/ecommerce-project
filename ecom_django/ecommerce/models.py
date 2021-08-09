@@ -3,7 +3,6 @@ from django.db import models
 
 
 class Product(models.Model):
-    # id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='products')
     name = models.CharField(max_length=255)
@@ -43,7 +42,6 @@ class Product(models.Model):
 
 
 class Review(models.Model):
-    # id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name='reviews')
     user = models.ForeignKey(
@@ -68,7 +66,6 @@ class Order(models.Model):
         (NOT_DELIVERED, 'not_delivered'),
     )
 
-    # id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='orders')
     paymentMethod = models.CharField(max_length=200, null=True, blank=True)
@@ -104,7 +101,6 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    # id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     product = models.ForeignKey(
         Product, on_delete=models.CASCADE, related_name='orderitems')
     order = models.ForeignKey(
@@ -124,7 +120,6 @@ class OrderItem(models.Model):
 
 
 class ShippingAddress(models.Model):
-    # id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     order = models.OneToOneField(
         Order, on_delete=models.CASCADE, null=True, blank=True, related_name='shipping')
     phone = models.CharField(max_length=255)
@@ -133,7 +128,7 @@ class ShippingAddress(models.Model):
     postal_code = models.CharField(max_length=200, null=True, blank=True)
     country = models.CharField(max_length=200, null=True, blank=True)
     shipping_price = models.DecimalField(
-        max_digits=6, decimal_places=2, null=True, blank=True)
+        max_digits=6, decimal_places=2, null=True, blank=True, default=0)
 
     def __str__(self):
         return str(self.address)

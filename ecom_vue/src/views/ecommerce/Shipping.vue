@@ -110,7 +110,7 @@ export default {
     }
   },
   mounted() {
-    document.title = "Shipping | Djackets"
+    document.title = "Shipping | Shop"
 
     this.cart = this.$store.state.cart
   },
@@ -167,18 +167,6 @@ export default {
 
         this.$store.commit("setIsLoading", false)
       }
-    },
-  },
-  computed: {
-    cartTotalLength() {
-      return this.cart.items.reduce((acc, curVal) => {
-        return parseInt((acc += parseInt(curVal.quantity)))
-      }, 0)
-    },
-    cartTotalPrice() {
-      return this.cart.items.reduce((acc, curVal) => {
-        return parseInt((acc += curVal.product.price * curVal.quantity))
-      }, 0)
     },
   },
 }

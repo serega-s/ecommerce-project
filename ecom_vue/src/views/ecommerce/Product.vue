@@ -69,11 +69,15 @@
                 <div class="list-group-item">
                   <button
                     type="button"
+                    v-if="product.is_available"
                     class="btn btn-dark"
                     @click="addToCart()"
                   >
                     Add to Cart
                   </button>
+                  <div class="alert alert-danger" v-else>
+                    Not In Stock
+                  </div>
                 </div>
               </div>
             </div>

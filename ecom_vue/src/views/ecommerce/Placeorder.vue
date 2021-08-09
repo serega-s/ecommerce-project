@@ -127,22 +127,19 @@
 
 <script>
 import axios from "axios"
+import cartComputed from '@/mixins/cartComputed.vue'
 export default {
   name: "Placeorder",
   data() {
     return {
-      cart: {
-        items: [],
-      },
       paymentMethod: "Credit Card",
 
       shipping_price: 0,
     }
   },
+  mixins: [cartComputed],
   mounted() {
     document.title = "Placeorder | Shop"
-
-    this.cart = this.$store.state.cart
   },
   methods: {
     getItemTotal(item) {
@@ -185,38 +182,15 @@ export default {
       await axios
         .post("/api/v1/products/add_order_items/", formData)
         .then((response) => {
-          console.log(response.data)
           this.$store.commit("clearCart")
-
-          console.log("SHIPPING_PRICE:", this.shipping_price)
+          this.$router.push({ name: "Order", params: { id: response.data.id } })
         })
         .catch((error) => {
           console.log(error.response)
           this.$router.push({ name: "Cart" })
         })
 
-      await axios
-        .get("/api/v1/orders/last-order/")
-        .then((response) => {
-          this.$router.push({ name: "Order", params: { id: response.data.id } })
-        })
-        .catch((error) => {
-          console.log(error.response)
-        })
-
       this.$store.commit("setIsLoading", false)
-    },
-  },
-  computed: {
-    cartTotalLength() {
-      return this.cart.items.reduce((acc, curVal) => {
-        return parseInt((acc += parseInt(curVal.quantity)))
-      }, 0)
-    },
-    cartTotalPrice() {
-      return this.cart.items.reduce((acc, curVal) => {
-        return parseFloat((acc += curVal.product.price * curVal.quantity))
-      }, 0)
     },
   },
 }
