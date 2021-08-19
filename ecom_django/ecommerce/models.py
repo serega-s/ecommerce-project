@@ -3,11 +3,11 @@ from django.db import models
 
 
 class Product(models.Model):
-    user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='products')
+    # user = models.ForeignKey(
+    #     User, on_delete=models.CASCADE, related_name='products')
     name = models.CharField(max_length=255)
     brand = models.CharField(max_length=255)
-    price = models.DecimalField(max_digits=7, decimal_places=2)
+    price = models.DecimalField(max_digits=7, decimal_places=2, default=0)
     description = models.TextField(blank=True, null=True)
     countInStock = models.IntegerField(blank=True, null=True, default=1)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -68,17 +68,16 @@ class Order(models.Model):
 
     user = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='orders')
-    paymentMethod = models.CharField(max_length=200, null=True, blank=True)
+    paymentMethod = models.CharField(max_length=200, blank=True, null=True)
     shipping_price = models.DecimalField(
-        max_digits=7, decimal_places=2, null=True, blank=True)
-    total_price = models.DecimalField(
-        max_digits=7, decimal_places=2, null=True, blank=True)
+        max_digits=3, decimal_places=2, default=0, blank=True, null=True)
+    total_price = models.DecimalField(max_digits=8, decimal_places=2, default=0, blank=True, null=True)
     is_paid = models.BooleanField(default=False)
-    paid_at = models.DateTimeField(auto_now_add=False, null=True, blank=True)
+    paid_at = models.DateTimeField(auto_now_add=False, blank=True, null=True)
     delivery_status = models.CharField(
         choices=DELIVERY_STATUS_CHOICES, max_length=50, default=PROCESSING)
     delivered_at = models.DateTimeField(
-        auto_now_add=False, null=True, blank=True)
+        auto_now_add=False, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -105,7 +104,7 @@ class OrderItem(models.Model):
         Product, on_delete=models.CASCADE, related_name='orderitems')
     order = models.ForeignKey(
         Order, on_delete=models.CASCADE, related_name='orderitems')
-    price = models.DecimalField(max_digits=6, decimal_places=2)
+    price = models.DecimalField(max_digits=8, decimal_places=2, default=0)
     name = models.CharField(max_length=255)
     image = models.CharField(max_length=255)
     quantity = models.IntegerField(default=0)
@@ -128,7 +127,7 @@ class ShippingAddress(models.Model):
     postal_code = models.CharField(max_length=200, null=True, blank=True)
     country = models.CharField(max_length=200, null=True, blank=True)
     shipping_price = models.DecimalField(
-        max_digits=6, decimal_places=2, null=True, blank=True, default=0)
+        max_digits=3, decimal_places=2, null=True, blank=True, default=0)
 
     def __str__(self):
         return str(self.address)

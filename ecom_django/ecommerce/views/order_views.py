@@ -3,16 +3,15 @@ from datetime import datetime
 from django.shortcuts import get_object_or_404
 from ecommerce.models import Order, OrderItem, Product, ShippingAddress
 from ecommerce.serializers import OrderSerializer
-from rest_framework import authentication
+from rest_framework import authentication, generics, permissions
 from rest_framework.decorators import (api_view, authentication_classes,
                                        permission_classes)
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 
 @api_view(['POST'])
 @authentication_classes([authentication.TokenAuthentication])
-@permission_classes([IsAuthenticated])
+@permission_classes([permissions.IsAuthenticated])
 def add_order_items(request):
     user = request.user
     data = request.data
@@ -29,8 +28,6 @@ def add_order_items(request):
             total_price=data['total_price']
         )
 
-        print('SHIPPING PRICE:', data['shipping_price'])
-
         shipping = ShippingAddress.objects.create(
             order=order,
             address=data['address'],
@@ -41,7 +38,6 @@ def add_order_items(request):
             shipping_price=data['shipping_price']
         )
 
-        # for loop for every item in our order items
         for i in orderitems:
             product = Product.objects.get(id=i['product'])
 
@@ -58,15 +54,29 @@ def add_order_items(request):
             product.save()
 
         current_order = user.orders.last()
-
         serializer = OrderSerializer(current_order)
 
         return Response(serializer.data)
 
 
+class GetMyOrders(generics.ListAPIView):
+    serializer_class = OrderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = Order.objects.all()
+
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user)
+
+
+class GetOrder(generics.RetrieveAPIView):
+    serializer_class = OrderSerializer
+    lookup_url_kwarg = 'order_id'
+    permission_classes = [permissions.IsAuthenticated]
+    queryset = Order.objects.all()
+
+
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
-@authentication_classes([authentication.TokenAuthentication])
+@permission_classes([permissions.IsAuthenticated])
 def confirm_order(request, order_id):
     order = get_object_or_404(Order, id=order_id)
 
@@ -77,24 +87,3 @@ def confirm_order(request, order_id):
     order.save()
 
     return Response('Order Confirmed')
-
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def get_my_orders(request):
-    user = request.user
-    orders = user.orders.all()
-    serializer = OrderSerializer(orders, many=True)
-
-    return Response(serializer.data)
-
-
-@api_view(['GET'])
-@authentication_classes([authentication.TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def get_order(request, order_id):
-    order = get_object_or_404(Order, id=order_id)
-
-    serializer = OrderSerializer(order)
-
-    return Response(serializer.data)

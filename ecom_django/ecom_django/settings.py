@@ -37,8 +37,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
+        # 'rest_framework.permissions.IsAuthenticated',
     ),
+    'DATETIME_FORMAT': '%d.%m.%Y %H:%M',
 }
 
 DJOSER = {
@@ -65,7 +66,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
-    'djoser'
+    'djoser',
 ]
 
 MIDDLEWARE = [
