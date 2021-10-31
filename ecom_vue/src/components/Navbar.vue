@@ -1,106 +1,110 @@
 <template>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-      <router-link class="navbar-brand uppercase" to="/">Shop</router-link>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-            <router-link
-              class="nav-link uppercase"
-              :class="{ active: isActive == 1 }"
-              @click="activateClass(1)"
-              aria-current="page"
-              to="/"
-              ><i class="bi bi-house"></i> Home</router-link
-            >
-          </li>
-          <li class="nav-item">
-            <router-link
-              :to="{ name: 'Cart' }"
-              class="nav-link uppercase"
-              :class="{ active: isActive == 2 }"
-              @click="activateClass(2)"
-              aria-current="page"
-              href="#"
-              ><i class="bi bi-cart"></i>&nbsp;Cart</router-link
-            >
-          </li>
-        </ul>
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <form class="d-flex" action="/search">
-              <input
-                class="search-control form-control me-2"
-                type="search"
-                name="query"
-                placeholder="Search..."
-                aria-label="Search"
-              />
-              <button
-                class="btn search-control btn-outline-success"
-                type="submit"
-              >
-                <i class="bi bi-search" aria-hidden="true"></i>
-              </button>
-            </form>
-          </li>
-        </ul>
-        <ul class="navbar-nav">
-          <template v-if="$store.state.isAuthenticated">
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle uppercase"
-                href="#"
-                id="navbarDropdown"
-                role="button"
-                data-bs-toggle="dropdown"
-                aria-expanded="false"
-              >
-                <i class="bi bi-person"></i>&nbsp;{{
-                  $store.state.user.first_name
-                }}
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li>
-                  <router-link :to="{ name: 'Profile' }" class="dropdown-item"
-                    >Profile</router-link
-                  >
-                </li>
-                <li>
-                  <a class="dropdown-item" href="#" @click="logout">Log out</a>
-                </li>
-              </ul>
-            </li>
-          </template>
-          <template v-else>
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <router-link class="navbar-brand uppercase" to="/">Shop</router-link>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
               <router-link
-                :to="{ name: 'Login' }"
-                :class="{ active: isActive == 2 }"
-                @click="activateClass(2)"
                 class="nav-link uppercase"
-                href="#"
-              >
-                <i class="bi bi-box-arrow-in-right"></i>
-                Login</router-link
+                :class="{ active: isActive == 1 }"
+                @click="activateClass(1)"
+                aria-current="page"
+                to="/"
+                ><i class="bi bi-house"></i> Home</router-link
               >
             </li>
-          </template>
-        </ul>
+            <li class="nav-item">
+              <router-link
+                :to="{ name: 'Cart' }"
+                class="nav-link uppercase"
+                :class="{ active: isActive == 2 }"
+                @click="activateClass(2)"
+                aria-current="page"
+                href="#"
+                ><i class="bi bi-cart"></i>&nbsp;Cart</router-link
+              >
+            </li>
+          </ul>
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <form class="d-flex" action="/search">
+                <input
+                  class="search-control form-control me-2"
+                  type="search"
+                  name="query"
+                  placeholder="Search..."
+                  aria-label="Search"
+                />
+                <button
+                  class="btn search-control btn-outline-success"
+                  type="submit"
+                >
+                  <i class="bi bi-search" aria-hidden="true"></i>
+                </button>
+              </form>
+            </li>
+          </ul>
+          <ul class="navbar-nav">
+            <template v-if="$store.state.isAuthenticated">
+              <li class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle uppercase"
+                  href="#"
+                  id="navbarDropdown"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <i class="bi bi-person"></i>&nbsp;{{
+                    $store.state.user.first_name
+                  }}
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li>
+                    <router-link :to="{ name: 'Profile' }" class="dropdown-item"
+                      >Profile</router-link
+                    >
+                  </li>
+                  <li>
+                    <a class="dropdown-item" href="#" @click="logout"
+                      >Log out</a
+                    >
+                  </li>
+                </ul>
+              </li>
+            </template>
+            <template v-else>
+              <li class="nav-item">
+                <router-link
+                  :to="{ name: 'Login' }"
+                  :class="{ active: isActive == 2 }"
+                  @click="activateClass(2)"
+                  class="nav-link uppercase"
+                  href="#"
+                >
+                  <i class="bi bi-box-arrow-in-right"></i>
+                  Login</router-link
+                >
+              </li>
+            </template>
+          </ul>
+        </div>
       </div>
-    </div>
-  </nav>
+    </nav>
+  </header>
 </template>
 
 <script>

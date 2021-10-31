@@ -2,7 +2,8 @@
   <div class="container">
     <div class="justify-content-md-center row">
       <div class="col-md-6 col-12">
-        <div class="justify-content-center mb-4 nav">
+        <NavItem :active="2" />
+        <!-- <div class="justify-content-center mb-4 nav">
           <div class="nav-item">
             <router-link
               to="/"
@@ -30,7 +31,7 @@
               >Place Order</router-link
             >
           </div>
-        </div>
+        </div> -->
         <form class="">
           <div class="form-group">
             <legend class="form-label">Select Method</legend>
@@ -41,7 +42,7 @@
                   type="radio"
                   class="form-check-input"
                   checked=""
-                /><label title="" for="paypal" class="form-check-label"
+                /><label title="Credit Card" for="paypal" class="form-check-label"
                   >Credit Card</label
                 >
               </div>
@@ -76,5 +77,3 @@ export default {
   },
 }
 </script>
-
-<style></style>

@@ -48,6 +48,29 @@
     <h1 class="uppercase">Latest Products</h1>
     <div>
       <div class="row">
+        <!-- <div class="col-lg-4">
+          <form method="GET" class="form" @change.prevent="getLatestProducts">
+            <p>
+              <label for="name">Name</label>
+              <input type="text" class="form-control" placeholder="Name">
+            </p>
+            <p>
+              <label for="description">Description</label>
+              <input type="text" class="form-control" placeholder="Description">
+            </p>
+            <p>
+              <label for="description">Brand</label>
+              <input type="text" class="form-control" placeholder="Brand">
+            </p>
+            <p>
+              <label for="price">Price Range</label>
+              <input type="text" class="form-control" placeholder="Min Price" v-model="min_price">
+              <input type="text" class="form-control" placeholder="Max Price" v-model="max_price">
+            </p>
+
+            <button class="btn btn-success" type="submit">Search</button>
+          </form>
+        </div> -->
         <div
           class="col-xl-3 col-lg-4 col-md-6 col-sm-12"
           v-for="product in products"
@@ -86,6 +109,11 @@ export default {
       isActive: 0,
       num_products: 0,
       carouselImages: [],
+      name: '',
+      brand: '',
+      description: '',
+      min_price: 0,
+      max_price: 0,
     }
   },
   mounted() {
@@ -105,6 +133,8 @@ export default {
       await axios
         .get("/api/v1/products/")
         .then((response) => {
+          console.log(response.data)
+          
           this.num_products = response.data.pages
           this.carouselImages[0] = response.data.products[0].get_image
           this.carouselImages[1] = response.data.products[1].get_image

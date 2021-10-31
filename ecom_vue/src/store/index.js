@@ -10,13 +10,13 @@ export default createStore({
       first_name: "",
       last_name: "",
     },
-    shippingInfo: {
-      address: "",
-      phone: "",
-      postal_code: "",
-      city: "",
-      country: "",
-    },
+    // shippingInfo: {
+    //   address: "",
+    //   phone: "",
+    //   postal_code: "",
+    //   city: "",
+    //   country: "",
+    // },
     cart: {
       items: [],
     },
@@ -39,11 +39,11 @@ export default createStore({
         state.user.first_name = localStorage.getItem("first_name")
         state.user.last_name = localStorage.getItem("last_name")
         state.user.email = localStorage.getItem("useremail")
-        state.shippingInfo.address = localStorage.getItem("address")
-        state.shippingInfo.postalcode = localStorage.getItem("postalcode")
-        state.shippingInfo.city = localStorage.getItem("city")
-        state.shippingInfo.country = localStorage.getItem("country")
-        state.shippingInfo.phone = localStorage.getItem("phone")
+        // state.shippingInfo.address = localStorage.getItem("address")
+        // state.shippingInfo.postalcode = localStorage.getItem("postalcode")
+        // state.shippingInfo.city = localStorage.getItem("city")
+        // state.shippingInfo.country = localStorage.getItem("country")
+        // state.shippingInfo.phone = localStorage.getItem("phone")
       } else {
         state.user.id = ""
         state.user.username = ""
@@ -52,11 +52,11 @@ export default createStore({
         state.user.first_name = ""
         state.user.last_name = ""
         state.isAuthenticated = false
-        state.shippingInfo.address = ""
-        state.shippingInfo.phone = ""
-        state.shippingInfo.postalcode = ""
-        state.shippingInfo.city = ""
-        state.shippingInfo.country = ""
+        // state.shippingInfo.address = ""
+        // state.shippingInfo.phone = ""
+        // state.shippingInfo.postalcode = ""
+        // state.shippingInfo.city = ""
+        // state.shippingInfo.country = ""
       }
     },
     addToCart(state, item) {
@@ -89,20 +89,20 @@ export default createStore({
       state.user.email = ""
       state.user.first_name = ""
       state.user.last_name = ""
-      state.shippingInfo.address = ""
-      state.shippingInfo.phone = ""
-      state.shippingInfo.city = ""
-      state.shippingInfo.country = ""
-      state.shippingInfo.postalcode = ""
+      // state.shippingInfo.address = ""
+      // state.shippingInfo.phone = ""
+      // state.shippingInfo.city = ""
+      // state.shippingInfo.country = ""
+      // state.shippingInfo.postalcode = ""
       state.token = ""
       state.isAuthenticated = false
     },
     setUser(state, user) {
       state.user = user
     },
-    setShipInfo(state, info) {
-      state.shippingInfo = info
-    },
+    // setShipInfo(state, info) {
+    //   state.shippingInfo = info
+    // },
     setIsLoading(state, status) {
       state.isLoading = status
     },

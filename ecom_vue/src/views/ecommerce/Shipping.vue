@@ -3,7 +3,7 @@
     <div class="container">
       <div class="justify-content-md-center row">
         <div class="col-md-6 col-12">
-          <div class="justify-content-center mb-4 nav">
+          <!-- <div class="justify-content-center mb-4 nav">
             <div class="nav-item">
               <router-link
                 :to="{ name: 'Shipping' }"
@@ -32,7 +32,8 @@
                 >Place Order</router-link
               >
             </div>
-          </div>
+          </div> -->
+          <NavItem :active="1" />
           <h1>Shipping</h1>
           <form @submit.prevent="submitForm">
             <div class="form-group">
@@ -42,7 +43,7 @@
                 placeholder="Enter phone"
                 type="number"
                 class="form-control"
-                v-model="phone"
+                v-model="shippingInfo.phone"
               />
             </div>
             <div class="form-group">
@@ -52,7 +53,7 @@
                 placeholder="Enter address"
                 type="text"
                 class="form-control"
-                v-model="address"
+                v-model="shippingInfo.address"
               />
             </div>
             <div class="form-group">
@@ -62,7 +63,7 @@
                 placeholder="Enter city"
                 type="text"
                 class="form-control"
-                v-model="city"
+                v-model="shippingInfo.city"
               />
             </div>
             <div class="form-group">
@@ -72,7 +73,7 @@
                 placeholder="Enter postal code"
                 type="text"
                 class="form-control"
-                v-model="postal_code"
+                v-model="shippingInfo.postal_code"
               />
             </div>
             <div class="form-group">
@@ -82,7 +83,7 @@
                 placeholder="Enter country"
                 type="text"
                 class="form-control"
-                v-model="country"
+                v-model="shippingInfo.country"
               />
             </div>
             <br />
@@ -97,18 +98,22 @@
 </template>
 
 <script>
+import NavItem from '@/components/NavItem.vue'
 export default {
   name: "Shipping",
   data() {
     return {
-      phone: "",
-      address: "",
-      postal_code: "",
-      city: "",
-      country: "",
+      shippingInfo: {
+        phone: "",
+        address: "",
+        postal_code: "",
+        city: "",
+        country: "",
+      },
       errors: [],
     }
   },
+  components: {NavItem},
   mounted() {
     document.title = "Shipping | Shop"
 
@@ -120,48 +125,23 @@ export default {
     },
     submitForm() {
       this.errors = []
-      localStorage.removeItem("address")
-      localStorage.removeItem("postal_code")
-      localStorage.removeItem("city")
-      localStorage.removeItem("phone")
-      localStorage.removeItem("country")
 
-      if (this.phone === "") {
+      if (this.shippingInfo.phone === "") {
         this.errors.push("The phone field is missing!")
-      }
-
-      if (this.address === "") {
+      } else if (this.shippingInfo.address === "") {
         this.errors.push("The address field is missing!")
-      }
-
-      if (this.postal_code === "") {
+      } else if (this.shippingInfo.postal_code === "") {
         this.errors.push("The postal code field is missing!")
-      }
-
-      if (this.city === "") {
+      } else if (this.shippingInfo.city === "") {
         this.errors.push("The city field is missing!")
-      }
-
-      if (this.country === "") {
+      } else if (this.shippingInfo.country === "") {
         this.errors.push("The country field is missing!")
       }
 
       if (!this.errors.length) {
         this.$store.commit("setIsLoading", true)
 
-        this.$store.commit("setShipInfo", {
-          address: this.address,
-          phone: this.phone,
-          postal_code: this.postal_code,
-          city: this.city,
-          country: this.country,
-        })
-
-        localStorage.setItem("address", this.address)
-        localStorage.setItem("postal_code", this.postal_code)
-        localStorage.setItem("phone", this.phone)
-        localStorage.setItem("city", this.city)
-        localStorage.setItem("country", this.country)
+        localStorage.setItem("shippingInfo", JSON.stringify(this.shippingInfo))
 
         this.$router.push({ name: "Payment" })
 

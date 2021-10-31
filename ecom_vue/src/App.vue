@@ -1,50 +1,18 @@
 <template>
   <div>
-    <header>
-      <Navbar />
-    </header>
-    <!-- <div
-      role="status"
-      class="spinner-border"
-      :class="{ 'is-loading': $store.state.isLoading }"
-      style="height: 100px; width: 100px; margin: auto; display: block;"
-    ></div> -->
-    <div class="d-flex justify-content-center">
-      <div
-        class="is-loading-bar "
-        :class="{ 'is-loading': $store.state.isLoading }"
-      >
-        <div class="lds-default">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
-      </div>
-    </div>
+    <Navbar />
+    <Loader />
     <main class="py-3">
       <router-view />
     </main>
-    <footer>
-      <div class="container">
-        <div class="row">
-          <div class="text-center py-3 col">Copyright 2021 © Shop</div>
-        </div>
-      </div>
-    </footer>
+    <Footer />
   </div>
 </template>
 
 <script>
 import Navbar from "@/components/Navbar.vue"
+import Footer from "@/components/Footer.vue"
+import Loader from "@/components/Loader.vue"
 import axios from "axios"
 export default {
   name: "App",
@@ -61,6 +29,8 @@ export default {
   },
   components: {
     Navbar,
+    Footer,
+    Loader,
   },
 }
 </script>

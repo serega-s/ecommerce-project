@@ -187,14 +187,12 @@ export default {
           .post(`/api/v1/products/${productID}/add_comment/`, formData)
           .then((response) => {
             console.log(response.data)
-            this.product.reviews = []
             this.comment = ""
             this.rating = 0
-            this.getProduct()
+            this.product.reviews = response.data.reviews
           })
           .catch((error) => {
             console.log(error.response)
-            console.log(error.response.status)
           })
       }
       this.$store.commit("setIsLoading", false)

@@ -41,7 +41,7 @@
 
             <div class="list-group-item">
               <h2>Payment Method</h2>
-              <p><strong>Method: </strong>{{ order.payment_method }}</p>
+              <p><strong>Method: </strong>{{ order.paymentMethod }}</p>
               <div
                 role="alert"
                 class="fade alert alert-success show"

@@ -1,7 +1,8 @@
 <template>
   <div class="container">
     <div>
-      <div class="justify-content-center mb-4 nav">
+      <NavItem :active="3" />
+      <!-- <div class="justify-content-center mb-4 nav">
         <div class="nav-item">
           <router-link
             :to="{ name: 'Shipping' }"
@@ -28,18 +29,17 @@
             >Place Order</router-link
           >
         </div>
-      </div>
+      </div> -->
       <div class="row">
         <div class="col-md-8">
           <div class="list-group list-group-flush">
             <div class="list-group-item">
               <h2>Shipping</h2>
               <p>
-                <strong>Shipping: </strong
-                >{{ $store.state.shippingInfo.country }},
-                {{ $store.state.shippingInfo.address }},
-                {{ $store.state.shippingInfo.postal_code }},
-                {{ $store.state.shippingInfo.phone }}
+                <strong>Shipping: </strong>
+                {{ shippingInfo.country }}, {{ shippingInfo.address }},
+                {{ shippingInfo.postal_code }},
+                {{ shippingInfo.phone }}
               </p>
             </div>
             <div class="list-group-item">
@@ -126,18 +126,21 @@
 </template>
 
 <script>
+import NavItem from "@/components/NavItem.vue"
+
 import axios from "axios"
-import cartComputed from '@/mixins/cartComputed.vue'
+import cartComputed from "@/mixins/cartComputed.vue"
 export default {
   name: "Placeorder",
   data() {
     return {
       paymentMethod: "Credit Card",
-
+      shippingInfo: JSON.parse(localStorage.getItem("shippingInfo")),
       shipping_price: 0,
     }
   },
   mixins: [cartComputed],
+  components: {NavItem},
   mounted() {
     document.title = "Placeorder | Shop"
   },
@@ -155,34 +158,32 @@ export default {
         const obj = {
           product: item.product.id,
           quantity: item.quantity,
-          price: item.product.price * item.quantity,
+          price: parseFloat(item.product.price * item.quantity).toFixed(2),
         }
 
         items.push(obj)
       }
-
-      if (this.cartTotalPrice < 100 && this.cartTotalLength < 2) {
-        this.shipping_price = 5.0
-      } else {
-        this.shipping_price = 0.0
-      }
+      this.cartTotalPrice < 100 && this.cartTotalLength < 2
+        ? (this.shipping_price = 5.0)
+        : (this.shipping_price = 0.0)
 
       const formData = {
         orderitems: items,
         paymentMethod: this.paymentMethod,
         shipping_price: this.shipping_price,
         total_price: this.cartTotalPrice,
-        address: this.$store.state.shippingInfo.address,
-        phone: this.$store.state.shippingInfo.phone,
-        city: this.$store.state.shippingInfo.city,
-        postal_code: this.$store.state.shippingInfo.postal_code,
-        country: this.$store.state.shippingInfo.country,
+        address: this.shippingInfo.address,
+        phone: this.shippingInfo.phone,
+        city: this.shippingInfo.city,
+        postal_code: this.shippingInfo.postal_code,
+        country: this.shippingInfo.country,
       }
 
       await axios
-        .post("/api/v1/products/add_order_items/", formData)
+        .post("/api/v1/orders/add_order_items/", formData)
         .then((response) => {
           this.$store.commit("clearCart")
+          localStorage.removeItem("shippingInfo")
           this.$router.push({ name: "Order", params: { id: response.data.id } })
         })
         .catch((error) => {
