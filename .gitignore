@@ -1,4 +1,4 @@
 /ecom_vue/node_modules/*
-/venv/*
+/venv/
 /.idea/
 /.vscode/
